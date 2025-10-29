@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iris Flower Prediction</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="/static/images/iris1.jpeg"
+          alt="Iris Flower"
+          class="flower-image"
+        />
+        <h1>Iris Prediction (Docker)</h1>
+        <p class="subtitle">
+          Enter flower measurements for species identification
+        </p>
+      </div>
+
+      <form action="/predict" method="post">
+        <div class="form-grid">
+          <div class="form-group">
+            <input
+              type="number"
+              id="sepal_length"
+              name="sepal_length"
+              step="0.1"
+              placeholder=" "
+              required
+            />
+            <label for="sepal_length">Sepal Length (cm)</label>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="number"
+              id="sepal_width"
+              name="sepal_width"
+              step="0.1"
+              placeholder=" "
+              required
+            />
+            <label for="sepal_width">Sepal Width (cm)</label>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="number"
+              id="petal_length"
+              name="petal_length"
+              step="0.1"
+              placeholder=" "
+              required
+            />
+            <label for="petal_length">Petal Length (cm)</label>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="number"
+              id="petal_width"
+              name="petal_width"
+              step="0.1"
+              placeholder=" "
+              required
+            />
+            <label for="petal_width">Petal Width (cm)</label>
+          </div>
+        </div>
+
+        <button type="submit" class="predict-btn">Predict Species</button>
+      </form>
+
+      <div style="margin-top: 16px">
+        <a href="/show-result" class="view-records-btn">View All Records</a>
+      </div>
+
+      {% if prediction %}
+      <div class="result">
+        <div class="prediction-value">{{ prediction }}</div>
+        {% if hostname %}
+        <div
+          style="
+            margin-top: 10px;
+            padding: 8px;
+            background: #e7f3ff;
+            border-radius: 4px;
+            font-size: 14px;
+          "
+        >
+          Container: {{ hostname }}
+        </div>
+        {% endif %} {% if db_status %}
+        <div
+          style="margin-top: 10px; padding: 8px; background: {% if db_status == 'degraded' %}#fff3cd{% else %}#d1ecf1{% endif %}; border-radius: 4px; font-size: 14px;"
+        >
+          Status: {{ db_status }}
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

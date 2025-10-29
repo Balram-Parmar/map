@@ -1,0 +1,92 @@
+version: "3.8"
+
+services:
+  webapp:
+    image: webapp:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_SERVICE_URL=http://dbapp:5001/record
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; requests.get('http://localhost:5000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  dbapp:
+    image: dbapp:latest
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    ports:
+      - "5001:5001"
+    volumes:
+      - db-data:/app/instance
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; requests.get('http://localhost:5001/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  visualizer:
+    image: dockersamples/visualizer:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: overlay
+
+volumes:
+  db-data:

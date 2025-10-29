@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prediction Records - Iris Flower</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <style>
+      .records-container {
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .records-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-top: 24px;
+      }
+
+      .records-table th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .records-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid #e5e7eb;
+        color: #374151;
+        font-weight: 500;
+      }
+
+      .records-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .records-table tr:nth-child(even) {
+        background-color: #f9fafb;
+      }
+
+      .records-table tr:hover {
+        background-color: #f3f4f6;
+        transition: background-color 0.2s ease;
+      }
+
+      .prediction-class {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: capitalize;
+      }
+
+      .back-btn {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+      }
+
+      .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(107, 114, 128, 0.3);
+      }
+
+      .no-records {
+        text-align: center;
+        padding: 48px 24px;
+        color: #6b7280;
+        font-size: 1.1rem;
+      }
+
+      @media (max-width: 640px) {
+        .records-container {
+          padding: 24px 16px;
+        }
+
+        .records-table {
+          font-size: 0.8rem;
+        }
+
+        .records-table th,
+        .records-table td {
+          padding: 12px 8px;
+        }
+
+        .records-table th {
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container records-container">
+      <div class="header">
+        <img
+          src="/static/images/iris1.jpeg"
+          alt="Iris Flower"
+          class="flower-image"
+        />
+        <h1>Prediction Records</h1>
+        <p class="subtitle">
+          Historical iris flower predictions and measurements
+        </p>
+      </div>
+
+      <a href="/" class="back-btn">← Back to Prediction</a>
+
+      {% if hostname %}
+      <div
+        style="
+          margin: 20px 0;
+          padding: 12px;
+          background: #e7f3ff;
+          border-radius: 8px;
+          color: #1e40af;
+        "
+      >
+        <strong>Container:</strong> {{ hostname }}
+      </div>
+      {% endif %} {% if degraded %}
+      <div
+        style="
+          margin: 20px 0;
+          padding: 12px;
+          background: #fff3cd;
+          border-radius: 8px;
+          color: #856404;
+        "
+      >
+        <strong>Degraded Mode:</strong> Showing cached records. Database service
+        unavailable.
+      </div>
+      {% endif %} {% if records %}
+      <table class="records-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Sepal Length</th>
+            <th>Sepal Width</th>
+            <th>Petal Length</th>
+            <th>Petal Width</th>
+            <th>Predicted Species</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records %}
+          <tr>
+            <td>{{ record.id }}</td>
+            <td>{{ "%.1f"|format(record.sepal_length) }} cm</td>
+            <td>{{ "%.1f"|format(record.sepal_width) }} cm</td>
+            <td>{{ "%.1f"|format(record.petal_length) }} cm</td>
+            <td>{{ "%.1f"|format(record.petal_width) }} cm</td>
+            <td>
+              <span class="prediction-class">{{ record.predicted_class }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="no-records">
+        <p>No prediction records found.</p>
+        <p>Make some predictions first!</p>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

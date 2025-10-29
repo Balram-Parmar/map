@@ -1,0 +1,1 @@
+To design and develop the scalable microservices using Docker Swarm. It includes deploying microservices in a cluster, managing scaling, load balancing, and ensuring high availability  and  fault  tolerance  in your applications.
